@@ -5,7 +5,6 @@ import modem
 import utime
 import quecgnss
 import ure
-import app_fota
 from misc import Power
 from misc import ADC
 from machine import RTC
@@ -22,12 +21,12 @@ from usr.LIS2DH12 import Lis2dh12
 #                   Off command:   ,2,0,60,0,0,1*
 #                   FOTA command:  ,2,0,60,1,0,0*    
 # from machine import UART
-TouchLED = LED(Pin.GPIO19, direction=Pin.OUT, pullMode=Pin.PULL_DISABLE, level=0)
+TouchLED = LED(Pin.GPIO18, direction=Pin.OUT, pullMode=Pin.PULL_DISABLE, level=0)
 B3_LED   = LED(Pin.GPIO3, direction=Pin.OUT, pullMode=Pin.PULL_DISABLE, level=0)
 B2_LED   = LED(Pin.GPIO4, direction=Pin.OUT, pullMode=Pin.PULL_DISABLE, level=0)
 B1_LED   = LED(Pin.GPIO2, direction=Pin.OUT, pullMode=Pin.PULL_DISABLE, level=0)
 B0_LED   = LED(Pin.GPIO1, direction=Pin.OUT, pullMode=Pin.PULL_DISABLE, level=0)
-Band_LED = LED(Pin.GPIO18, direction=Pin.OUT, pullMode=Pin.PULL_DISABLE, level=0)
+Band_LED = LED(Pin.GPIO19, direction=Pin.OUT, pullMode=Pin.PULL_DISABLE, level=0)
 Charger_LED = LED(Pin.GPIO9, direction=Pin.OUT, pullMode=Pin.PULL_DISABLE, level=0) 
 IR_Tx = LED(Pin.GPIO46, direction=Pin.OUT, pullMode=Pin.PULL_DISABLE, level=0) 
 Vibre = Buzzer(Pin.GPIO23, direction=Pin.OUT, pullMode=Pin.PULL_DISABLE, level=0)
@@ -133,7 +132,7 @@ net.setModemFun(0)
 net.setModemFun(1)
 net.setApn('mcinet',0)
 rtc = RTC()
-TrackerMsgFormat = "*{imei};T41CH140111;{AorV};{date};{time};{GLat};{GLong};{time_s};{Blat};{Blong};{GSpeed};{GCog};{Gsat};{GHdop};{csq};{vbat};{Charger};{BandTamper};{Temperature};{mcc1}|{mnc1}|{lac1}|{cid1}|{rssi1};{mcc2}|{mnc2}|{lac2}|{cid2}|{rssi2};{mcc3}|{mnc3}|{lac3}|{cid3}|{rssi3};{mcc4}|{mnc4}|{lac4}|{cid4}|{rssi4};{mcc5}|{mnc5}|{lac5}|{cid5}|{rssi5};{mcc6}|{mnc6}|{lac6}|{cid6}|{rssi6};{mcc7}|{mnc7}|{lac7}|{cid7}|{rssi7};{sim_id};{doorTamper};{Accel};{SOS};0!"
+TrackerMsgFormat = "*{imei};T41FoTA;{AorV};{date};{time};{GLat};{GLong};{time_s};{Blat};{Blong};{GSpeed};{GCog};{Gsat};{GHdop};{csq};{vbat};{Charger};{BandTamper};{Temperature};{mcc1}|{mnc1}|{lac1}|{cid1}|{rssi1};{mcc2}|{mnc2}|{lac2}|{cid2}|{rssi2};{mcc3}|{mnc3}|{lac3}|{cid3}|{rssi3};{mcc4}|{mnc4}|{lac4}|{cid4}|{rssi4};{mcc5}|{mnc5}|{lac5}|{cid5}|{rssi5};{mcc6}|{mnc6}|{lac6}|{cid6}|{rssi6};{mcc7}|{mnc7}|{lac7}|{cid7}|{rssi7};{sim_id};{doorTamper};{Accel};{SOS};0!"
 #TrackerMsgFormat = "*{imei};T41CH140111;{AorV};{date};{time};{GLat};{GLong};{time_s};{Blat};{Blong};{GSpeed};{GCog};{Gsat};{GHdop};{csq};{vbat};{charger};{Band};{Temperature};{mcc1}|{mnc1}|{lac1}|{cid1}|{rssi1};{mcc2}|{mnc2}|{lac2}|{cid2}|{rssi2};{mcc3}|{mnc3}|{lac3}|{cid3}|{rssi3};{mcc4}|{mnc4}|{lac4}|{cid4}|{rssi4};{mcc5}|{mnc5}|{lac5}|{cid5}|{rssi5};{mcc6}|{mnc6}|{lac6}|{cid6}|{rssi6};{mcc7}|{mnc7}|{lac7}|{cid7}|{rssi7};{sim_id};{doorTamper};{Accel};{SoS};0!"
 timer = Timer(Timer.Timer1)
 TamperTimer = Timer(Timer.Timer2)
@@ -304,13 +303,7 @@ def func(args):
         if (response_txt_csv[6] == "1*"):
             print("Turn off: N/I yet!")
         if (int(response_txt_csv[4]) == 1):
-            # print("FOTA : N/I yet!")
-            url="https://raw.githubusercontent.com/dezdeepblue/TestingTR4/main/main.py"
-            file_name="main.py"
-            fota = app_fota.new()
-            fota.download(url, file_name)
-            fota.set_update_flag()
-            Power.powerRestart()
+            print("FOTA : N/I yet!")
     
     SOS=0;Charger=0;BandTamperSent=1;doorTamperSent=1;Temperature=0;Accel=0
     response.close()
